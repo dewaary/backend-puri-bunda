@@ -8,9 +8,16 @@ use App\Models\Unit;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UnitController extends Controller
 {
+    
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api');
+    // }
+
     public function index()
     {
         try {
