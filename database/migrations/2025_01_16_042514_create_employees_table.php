@@ -18,8 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->foreignId('unit_id')->constrained('units')->onDelete('cascade');
             $table->foreignId('position_id')->constrained('positions')->onDelete('cascade');
-            $table->date('joined_at');
-            $table->timestamps();
+            $table->timestamp('joined_at')->useCurrent();
         });
     }
 

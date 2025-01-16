@@ -2,58 +2,86 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helper\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Unit;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UnitController extends Controller
 {
     public function index()
     {
-        $units = Unit::all();
-        return response()->json($units);
+        try {
+            $units = Unit::all();
+            return ResponseHelper::success('success', 'Units retrieved successfully', $units);
+        } catch (Exception $e) {
+            Log::error('Error retrieving units: ' . $e->getMessage());
+            return ResponseHelper::error('error', 'Failed to retrieve units', 500);
+        }
     }
 
     public function show($id)
     {
-        $unit = Unit::find($id);
-        if (!$unit) {
-            return response()->json(['message' => 'Unit not found'], 404);
+        try {
+            $unit = Unit::find($id);
+            if (!$unit) {
+                return ResponseHelper::error('error', 'Unit not found', 404);
+            }
+            return ResponseHelper::success('success', 'Unit retrieved successfully', $unit);
+        } catch (Exception $e) {
+            Log::error('Error retrieving unit: ' . $e->getMessage());
+            return ResponseHelper::error('error', 'Failed to retrieve unit', 500);
         }
-        return response()->json($unit);
     }
 
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required|string|max:255']);
+        try {
+            $request->validate(['name' => 'required|string|max:255']);
 
-        $unit = Unit::create(['name' => $request->name]);
+            $unit = Unit::create(['name' => $request->name]);
 
-        return response()->json($unit, 201);
+            return ResponseHelper::success('success', 'Unit created successfully', $unit, 201);
+        } catch (Exception $e) {
+            Log::error('Error creating unit: ' . $e->getMessage());
+            return ResponseHelper::error('error', 'Failed to create unit', 500);
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $unit = Unit::find($id);
-        if (!$unit) {
-            return response()->json(['message' => 'Unit not found'], 404);
+        try {
+            $unit = Unit::find($id);
+            if (!$unit) {
+                return ResponseHelper::error('error', 'Unit not found', 404);
+            }
+
+            $request->validate(['name' => 'required|string|max:255']);
+
+            $unit->update(['name' => $request->name]);
+
+            return ResponseHelper::success('success', 'Unit updated successfully', $unit);
+        } catch (Exception $e) {
+            Log::error('Error updating unit with ID ' . $id . ': ' . $e->getMessage());
+            return ResponseHelper::error('error', 'Failed to update unit', 500);
         }
-
-        $request->validate(['name' => 'required|string|max:255']);
-
-        $unit->update(['name' => $request->name]);
-
-        return response()->json($unit);
     }
 
     public function destroy($id)
     {
-        $unit = Unit::find($id);
-        if (!$unit) {
-            return response()->json(['message' => 'Unit not found'], 404);
-        }
+        try {
+            $unit = Unit::find($id);
+            if (!$unit) {
+                return ResponseHelper::error('error', 'Unit not found', 404);
+            }
 
-        $unit->delete();
-        return response()->json(['message' => 'Unit deleted successfully']);
+            $unit->delete();
+            return ResponseHelper::success('success', 'Unit deleted successfully');
+        } catch (Exception $e) {
+            Log::error('Error deleting unit with ID ' . $id . ': ' . $e->getMessage());
+            return ResponseHelper::error('error', 'Failed to delete unit', 500);
+        }
     }
 }
