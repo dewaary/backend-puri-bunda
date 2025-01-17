@@ -87,7 +87,7 @@ class AuthController extends Controller
             $topUsersData = $topUsers->map(function($loginStat) {
                 $employee = Employee::find($loginStat->employee_id);
                 return [
-                    'name' => $employee->fullname,
+                    'name' => $employee->name,
                     'username' => $employee->username,
                     'login_count' => $loginStat->login_count
                 ];
