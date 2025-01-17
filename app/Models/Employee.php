@@ -13,7 +13,7 @@ class Employee extends Model implements JWTSubject
     use HasFactory;
 
     protected $fillable = [
-        'name', 'username', 'password', 'unit_id', 'position_id', 'joined_at'
+        'name', 'username', 'password', 'unit_id', 'joined_at'
     ];
 
     protected $hidden = [
@@ -27,9 +27,9 @@ class Employee extends Model implements JWTSubject
     }
 
     // Relasi dengan Position
-    public function position()
+    public function positions()
     {
-        return $this->belongsTo(Position::class);
+        return $this->belongsToMany(Position::class);
     }
 
     protected static function boot()

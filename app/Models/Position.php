@@ -11,8 +11,13 @@ class Position extends Model
 
     protected $fillable = ['name'];
 
-    public function employees()
+    // public function employees()
+    // {
+    //     return $this->hasMany(Employee::class);
+    // }
+
+        public function employees()
     {
-        return $this->hasMany(Employee::class);
+        return $this->belongsToMany(Employee::class);
     }
 }
