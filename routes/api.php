@@ -24,6 +24,8 @@ Route::middleware([JwtMiddleware::class])->group(function () {
 });
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login-stats', [AuthController::class, 'getLoginStats']);
+Route::get('/top-users', [AuthController::class, 'getTopUsers']);
 
 Route::get('/units', [UnitController::class, 'index']);
 Route::post('/units/add-data', [UnitController::class, 'store']);
@@ -33,3 +35,5 @@ Route::post('/positions/add-data', [PositionController::class, 'store']);
 
 Route::get('/employees', [EmployeeController::class, 'index']);
 Route::post('/employees/add-data', [EmployeeController::class, 'store']);
+
+
