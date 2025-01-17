@@ -53,18 +53,16 @@ class AuthController extends Controller
     public function getLoginStats(Request $request)
     {
         try {
-            // Mengambil login history per pengguna
             $loginStats = LoginHistory::select('employee_id', DB::raw('COUNT(*) as login_count'))
                 ->groupBy('employee_id')
                 ->get();
     
-            // Ambil data lengkap dari tabel employees untuk setiap user yang memiliki login history
             $userLoginStats = $loginStats->map(function($loginStat) {
                 $employee = Employee::find($loginStat->employee_id);
                 return [
-                    'name' => $employee->name,  // Ambil nama lengkap
-                    'username' => $employee->username,  // Ambil username
-                    'login_count' => $loginStat->login_count  // Jumlah login
+                    'name' => $employee->name,
+                    'username' => $employee->username,
+                    'login_count' => $loginStat->login_count
                 ];
             });
     
@@ -79,21 +77,19 @@ class AuthController extends Controller
     public function getTopUsers(Request $request)
     {
         try {
-            // Ambil login history per pengguna, filter yang login lebih dari 25 kali
             $topUsers = LoginHistory::select('employee_id', DB::raw('COUNT(*) as login_count'))
                 ->groupBy('employee_id')
-                ->havingRaw('COUNT(*) > 25')  // Hanya ambil yang login lebih dari 25 kali
+                ->havingRaw('COUNT(*) > 25')
                 ->orderByDesc('login_count')
                 ->limit(10)
                 ->get();
     
-            // Ambil data lengkap dari tabel employees untuk pengguna yang login lebih dari 25 kali
             $topUsersData = $topUsers->map(function($loginStat) {
                 $employee = Employee::find($loginStat->employee_id);
                 return [
-                    'name' => $employee->fullname,  // Nama lengkap
-                    'username' => $employee->username,  // Username
-                    'login_count' => $loginStat->login_count  // Jumlah login
+                    'name' => $employee->fullname,
+                    'username' => $employee->username,
+                    'login_count' => $loginStat->login_count
                 ];
             });
     

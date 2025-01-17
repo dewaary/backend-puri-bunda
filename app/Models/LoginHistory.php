@@ -9,16 +9,14 @@ class LoginHistory extends Model
 {
     use HasFactory;
 
-    protected $table = 'login_histories'; // Nama tabel di database
+    protected $table = 'login_histories';
 
-    // Tentukan kolom-kolom yang bisa diisi
     protected $fillable = [
         'employee_id',
         'login_time',
         'ip_address',
     ];
 
-    // Relasi dengan tabel Employee
     public function employee()
     {
         return $this->belongsTo(Employee::class);

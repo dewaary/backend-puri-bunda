@@ -43,38 +43,32 @@ class EmployeeController extends Controller
         try {
             $request->validate([
                 'name' => 'required|string|max:255',
-                'username' => 'required|string|regex:/\d/|unique:employees,username|max:255', // Username harus mengandung angka dan unik
+                'username' => 'required|string|regex:/\d/|unique:employees,username|max:255',
                 'password' => 'required|string|min:8',
                 'unit_id' => 'required|exists:units,id',
                 'position_ids' => 'required|array',
                 'position_ids.*' => 'exists:positions,id',
             ]);
 
-            // Cek apakah ada unit baru yang perlu ditambahkan
             if ($request->has('new_unit')) {
-                // Jika unit baru ditambahkan, buat unit baru dan tentukan unit_id
                 $unit = Unit::create(['name' => $request->new_unit]);
-                $unit_id = $unit->id;  // Ambil ID unit baru yang telah dibuat
+                $unit_id = $unit->id;
             } else {
-                // Gunakan unit_id yang sudah ada
                 $unit_id = $request->unit_id;
             }
 
-            // Menyimpan data employee tanpa posisi langsung
             $employee = Employee::create([
                 'name' => $request->name,
                 'username' => $request->username,
                 'password' => bcrypt($request->password),
-                'unit_id' => $unit_id,  // Gunakan unit_id yang sudah ditentukan
+                'unit_id' => $unit_id,
             ]);
 
-            // Setelah employee berhasil dibuat, kita mengaitkan posisi menggunakan tabel pivot
             $employee->positions()->attach($request->position_ids);
 
             return ResponseHelper::success('success', 'Employee created successfully', $employee, 201);
 
         } catch (ValidationException $e) {
-            // Tangani error validasi dengan mengembalikan response dengan detail error
             return ResponseHelper::error('validation_error', $e->errors(), 422);
         } catch (Exception $e) {
             Log::error('Error creating employee: ' . $e->getMessage());
@@ -94,7 +88,7 @@ class EmployeeController extends Controller
     
             $request->validate([
                 'name' => 'required|string|max:255',
-                'username' => 'required|string|regex:/\d/|unique:employees,username,' . $id . '|max:255', // Username harus mengandung angka dan unik
+                'username' => 'required|string|regex:/\d/|unique:employees,username,' . $id . '|max:255',
                 'password' => 'nullable|string|min:6',
                 'unit_id' => 'required|exists:units,id',
                 'position_id' => 'required|exists:positions,id',

@@ -20,13 +20,11 @@ class Employee extends Model implements JWTSubject
         'password',
     ];
 
-    // Relasi dengan Unit
     public function unit()
     {
         return $this->belongsTo(Unit::class);
     }
 
-    // Relasi dengan Position
     public function positions()
     {
         return $this->belongsToMany(Position::class);
@@ -37,9 +35,8 @@ class Employee extends Model implements JWTSubject
         parent::boot();
 
         static::creating(function ($employee) {
-            // Jika 'joined_at' tidak ada dalam data, set menjadi waktu sekarang
             if (!$employee->joined_at) {
-                $employee->joined_at = Carbon::now(); // Gunakan waktu sekarang
+                $employee->joined_at = Carbon::now();
             }
         });
     }
